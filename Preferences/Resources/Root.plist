@@ -36,9 +36,43 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>DISPLAY OPTIONS</string>
+			<string>WHEN TO SHOW</string>
 			<key>footerText</key>
-			<string>'Show On Lock Screen' Will Show RAM Info While Device Is Unlocked.</string>
+			<string>'SHOW ON LOCK SCREEN' WILL SHOW RAM INFO WHILE DEVICE IS UNLOCKED.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.johnzaro.raminfo13prefs</string>
+			<key>key</key>
+			<string>showOnLockScreen</string>
+			<key>label</key>
+			<string>Show On Lock Screen</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.johnzaro.raminfo13prefs</string>
+			<key>key</key>
+			<string>hideOnLandscape</string>
+			<key>label</key>
+			<string>Hide On Landscape</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>WHAT TO SHOW</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -123,24 +157,6 @@
 			<string>Total RAM Prefix</string>
 			<key>PostNotification</key>
 			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.johnzaro.raminfo13prefs</string>
-			<key>key</key>
-			<string>showOnLockScreen</string>
-			<key>label</key>
-			<string>Show On Lock Screen</string>
-			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -235,6 +251,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>IF 'FOLLOW DEVICE ORIENTATION' OPTION IS DISABLED, THE RAM INFO WILL ALWAYS STAY IN PORTRAIT POSITION.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -305,6 +323,26 @@
 			<string>backgroundColorEnabled</string>
 			<key>label</key>
 			<string>Enable Background Color</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBStepperTableCell</string>
+			<key>default</key>
+			<real>3</real>
+			<key>defaults</key>
+			<string>com.johnzaro.raminfo13prefs</string>
+			<key>key</key>
+			<string>margin</string>
+			<key>label</key>
+			<string>Margin: %i pixels</string>
+			<key>singularLabel</key>
+			<string>Margin: 1 pixel</string>
+			<key>max</key>
+			<real>20</real>
+			<key>min</key>
+			<real>0</real>
 			<key>PostNotification</key>
 			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
 		</dict>
@@ -552,7 +590,7 @@
 			<key>action</key>
 			<string>selectHoldApp</string>
    	 	</dict>
-			<dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>

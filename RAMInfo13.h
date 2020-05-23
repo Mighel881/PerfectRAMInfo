@@ -4,14 +4,13 @@
 - (BOOL)isPresented;
 @end
 
-@interface UILabelWithInsets : UILabel
-@end
-
 @interface RamInfo: NSObject
 {
     UIWindow *ramInfoWindow;
-    UILabelWithInsets *ramInfoLabel;
+    UILabel *ramInfoLabel;
     SBCoverSheetPresentationManager *coverSheetPresentationManagerInstance;
+    UIColor *backupForegroundColor;
+    UIColor *backupBackgroundColor;
 }
 - (id)init;
 - (void)updateOrientation;
@@ -21,7 +20,11 @@
 - (void)updateTextColor: (UIColor*)color;
 - (void)openDoubleTapApp;
 - (void)openHoldApp;
-- (void)setHidden: (BOOL)arg;
+- (void)hideIfNeeded;
+@end
+
+@interface UIScreen ()
+- (CGRect)_referenceBounds;
 @end
 
 @interface UIWindow ()
@@ -29,12 +32,12 @@
 @end
 
 @interface SBApplication: NSObject
--(NSString*)bundleIdentifier;
+- (NSString*)bundleIdentifier;
 @end
 
 @interface SpringBoard: UIApplication
 - (id)_accessibilityFrontMostApplication;
--(void)frontDisplayDidChange: (id)arg1;
+- (void)frontDisplayDidChange: (id)arg1;
 @end
 
 @interface UIApplication ()
@@ -48,8 +51,4 @@
 
 @interface _UIStatusBar: UIView
 @property(nonatomic, retain) _UIStatusBarStyleAttributes *styleAttributes;
-@end
-
-@interface CALayer ()
-- (void)setContinuousCorners:(BOOL)arg1;
 @end

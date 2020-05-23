@@ -20,6 +20,7 @@ __strong static id ramInfoObject;
 static HBPreferences *pref;
 static BOOL enabled;
 static BOOL showOnLockScreen;
+static BOOL hideOnLandscape;
 static BOOL showUsedRam;
 static NSString *usedRAMPrefix;
 static BOOL showFreeRam;
@@ -28,6 +29,7 @@ static BOOL showTotalPhysicalRam;
 static NSString *totalRAMPrefix;
 static NSString *separator;
 static BOOL backgroundColorEnabled;
+static int margin;
 static float backgroundCornerRadius;
 static BOOL customBackgroundColorEnabled;
 static UIColor *customBackgroundColor;
@@ -51,7 +53,11 @@ static NSString *holdIdentifier;
 static BOOL enableBlackListedApps;
 static NSArray *blackListedApps;
 
+static BOOL shouldHideBasedOnOrientation = NO;
+static BOOL isLockScreenPresented = NO;
 static BOOL isBlacklistedAppInFront = NO;
+static BOOL isOnLandscape;
+static UIDeviceOrientation deviceOrientation;
 
 static NSString* getMemoryStats()
 {
@@ -89,34 +95,21 @@ static NSString* getMemoryStats()
 
 static void orientationChanged()
 {
-	if(followDeviceOrientation && ramInfoObject) 
+	deviceOrientation = [[UIApplication sharedApplication] _frontMostAppOrientation];
+	if(deviceOrientation == UIDeviceOrientationLandscapeRight || deviceOrientation == UIDeviceOrientationLandscapeLeft)
+		isOnLandscape = YES;
+	else
+		isOnLandscape = NO;
+	
+	if((hideOnLandscape || followDeviceOrientation) && ramInfoObject) 
 		[ramInfoObject updateOrientation];
 }
 
 static void loadDeviceScreenDimensions()
 {
-	UIDeviceOrientation orientation = [[UIApplication sharedApplication] _frontMostAppOrientation];
-	if(orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight)
-	{
-		screenWidth = [[UIScreen mainScreen] bounds].size.height;
-		screenHeight = [[UIScreen mainScreen] bounds].size.width;
-	}
-	else
-	{
-		screenWidth = [[UIScreen mainScreen] bounds].size.width;
-		screenHeight = [[UIScreen mainScreen] bounds].size.height;
-	}
+	screenWidth = [[UIScreen mainScreen] _referenceBounds].size.width;
+	screenHeight = [[UIScreen mainScreen] _referenceBounds].size.height;
 }
-
-@implementation UILabelWithInsets
-
-- (void)drawTextInRect: (CGRect)rect
-{
-    UIEdgeInsets insets = {0, 5, 0, 5};
-    [super drawTextInRect: UIEdgeInsetsInsetRect(rect, insets)];
-}
-
-@end
 
 @implementation RamInfo
 
@@ -125,37 +118,31 @@ static void loadDeviceScreenDimensions()
 		self = [super init];
 		if(self)
 		{
-			@try
-			{
-				ramInfoWindow = [[UIWindow alloc] initWithFrame: CGRectMake(0, 0, width, height)];
-				[ramInfoWindow setHidden: NO];
-				[ramInfoWindow setAlpha: 1];
-				[ramInfoWindow _setSecure: YES];
-				[ramInfoWindow setUserInteractionEnabled: YES];
-				[[ramInfoWindow layer] setAnchorPoint: CGPointZero];
-				
-				ramInfoLabel = [[UILabelWithInsets alloc] initWithFrame: CGRectMake(0, 0, width, height)];
-				[ramInfoLabel setNumberOfLines: 1];
-				[[ramInfoLabel layer] setMasksToBounds: YES];
-				[ramInfoWindow addSubview: ramInfoLabel];
+			ramInfoLabel = [[UILabel alloc] initWithFrame: CGRectMake(margin, margin, width - 2 * margin, height - 2 * margin)];
+			[ramInfoLabel setAdjustsFontSizeToFitWidth: YES];
 
-				UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(openDoubleTapApp)];
-				[tapGestureRecognizer setNumberOfTapsRequired: 2];
-				[ramInfoWindow addGestureRecognizer: tapGestureRecognizer];
+			UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(openDoubleTapApp)];
+			[tapGestureRecognizer setNumberOfTapsRequired: 2];
 
-				UILongPressGestureRecognizer *holdGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget: self action: @selector(openHoldApp)];
-				[ramInfoWindow addGestureRecognizer: holdGestureRecognizer];
+			UILongPressGestureRecognizer *holdGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget: self action: @selector(openHoldApp)];
+			
+			ramInfoWindow = [[UIWindow alloc] initWithFrame: CGRectMake(0, 0, width, height)];
+			[ramInfoWindow _setSecure: YES];
+			[[ramInfoWindow layer] setAnchorPoint: CGPointZero];
+			[ramInfoWindow addSubview: ramInfoLabel];
+			[ramInfoWindow addGestureRecognizer: tapGestureRecognizer];
+			[ramInfoWindow addGestureRecognizer: holdGestureRecognizer];
+			
+			coverSheetPresentationManagerInstance = [%c(SBCoverSheetPresentationManager) sharedInstance];
 
-				coverSheetPresentationManagerInstance = [%c(SBCoverSheetPresentationManager) sharedInstance];
+			backupForegroundColor = [UIColor whiteColor];
+			backupBackgroundColor = [[UIColor blackColor] colorWithAlphaComponent: 0.5];
+			[self updateFrame];
 
-				[self updateFrame];
+			[NSTimer scheduledTimerWithTimeInterval: updateInterval target: self selector: @selector(updateText) userInfo: nil repeats: YES];
 
-				[NSTimer scheduledTimerWithTimeInterval: updateInterval target: self selector: @selector(updateText) userInfo: nil repeats: YES];
-
-				CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)&orientationChanged, CFSTR("com.apple.springboard.screenchanged"), NULL, 0);
-				CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, (CFNotificationCallback)&orientationChanged, CFSTR("UIWindowDidRotateNotification"), NULL, CFNotificationSuspensionBehaviorCoalesce);
-			}
-			@catch (NSException *e) {}
+			CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)&orientationChanged, CFSTR("com.apple.springboard.screenchanged"), NULL, 0);
+			CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, (CFNotificationCallback)&orientationChanged, CFSTR("UIWindowDidRotateNotification"), NULL, CFNotificationSuspensionBehaviorCoalesce);
 		}
 		return self;
 	}
@@ -168,8 +155,20 @@ static void loadDeviceScreenDimensions()
 
 	- (void)_updateFrame
 	{
-		if(showOnLockScreen) [ramInfoWindow setWindowLevel: 1051];
+		if(showOnLockScreen) [ramInfoWindow setWindowLevel: 1075];
 		else [ramInfoWindow setWindowLevel: 1000];
+
+		if(!backgroundColorEnabled)
+			[ramInfoWindow setBackgroundColor: [UIColor clearColor]];
+		else
+		{
+			if(customBackgroundColorEnabled)
+				[ramInfoWindow setBackgroundColor: customBackgroundColor];
+			else
+				[ramInfoWindow setBackgroundColor: backupBackgroundColor];
+
+			[[ramInfoWindow layer] setCornerRadius: backgroundCornerRadius];
+		}
 
 		[self updateRAMInfoLabelProperties];
 		[self updateRAMInfoSize];
@@ -187,105 +186,110 @@ static void loadDeviceScreenDimensions()
 
 		if(customTextColorEnabled)
 			[ramInfoLabel setTextColor: customTextColor];
-
-		if(!backgroundColorEnabled)
-			[ramInfoLabel setBackgroundColor: [UIColor clearColor]];
 		else
-		{
-			[[ramInfoLabel layer] setCornerRadius: backgroundCornerRadius];
-			[[ramInfoLabel layer] setContinuousCorners: YES];
-			
-			if(customBackgroundColorEnabled)
-				[ramInfoLabel setBackgroundColor: customBackgroundColor];
-		}
+			[ramInfoLabel setTextColor: backupForegroundColor];
 	}
 
 	- (void)updateRAMInfoSize
 	{
-		CGRect frame = [ramInfoLabel frame];
-		frame.size.width = width;
-		frame.size.height = height;
-		[ramInfoLabel setFrame: frame];
-
-		frame = [ramInfoWindow frame];
+		CGRect frame = [ramInfoWindow frame];
 		frame.size.width = width;
 		frame.size.height = height;
 		[ramInfoWindow setFrame: frame];
+
+		frame = [ramInfoLabel frame];
+		frame.origin.x = margin;
+		frame.origin.y = margin;
+		frame.size.width = [ramInfoWindow frame].size.width - 2 * margin;
+		frame.size.height = [ramInfoWindow frame].size.height - 2 * margin;
+		[ramInfoLabel setFrame: frame];
 	}
 
 	- (void)updateOrientation
 	{
+		shouldHideBasedOnOrientation = hideOnLandscape && isOnLandscape;
+		[self hideIfNeeded];
+
 		if(!followDeviceOrientation)
 		{
 			CGRect frame = [ramInfoWindow frame];
 			frame.origin.x = portraitX;
 			frame.origin.y = portraitY;
+			frame.size.width = width;
+			frame.size.height = height;
 			[ramInfoWindow setFrame: frame];
 		} 
 		else
 		{
-			UIDeviceOrientation orientation = [[UIApplication sharedApplication] _frontMostAppOrientation];
-			if(orientation == orientationOld)
+			if(deviceOrientation == orientationOld)
 				return;
 			
 			CGAffineTransform newTransform;
 			CGRect frame = [ramInfoWindow frame];
 
-			switch (orientation)
+			if(deviceOrientation == UIDeviceOrientationPortrait)
 			{
-				case UIDeviceOrientationLandscapeRight:
-				{
-					frame.origin.x = landscapeY;
-					frame.origin.y = screenHeight - landscapeX;
-					newTransform = CGAffineTransformMakeRotation(-DegreesToRadians(90));
-					break;
-				}
-				case UIDeviceOrientationLandscapeLeft:
-				{
-					frame.origin.x = screenWidth - landscapeY;
-					frame.origin.y = landscapeX;
-					newTransform = CGAffineTransformMakeRotation(DegreesToRadians(90));
-					break;
-				}
-				case UIDeviceOrientationPortraitUpsideDown:
-				{
-					frame.origin.x = screenWidth - portraitX;
-					frame.origin.y = screenHeight - portraitY;
-					newTransform = CGAffineTransformMakeRotation(DegreesToRadians(180));
-					break;
-				}
-				case UIDeviceOrientationPortrait:
-				default:
-				{
-					frame.origin.x = portraitX;
-					frame.origin.y = portraitY;
-					newTransform = CGAffineTransformMakeRotation(DegreesToRadians(0));
-					break;
-				}
+				frame.origin.x = portraitX;
+				frame.origin.y = portraitY;
+				newTransform = CGAffineTransformMakeRotation(DegreesToRadians(0));
+			}
+			else if(deviceOrientation == UIDeviceOrientationLandscapeLeft)
+			{
+				frame.origin.x = screenWidth - landscapeY;
+				frame.origin.y = landscapeX;
+				newTransform = CGAffineTransformMakeRotation(DegreesToRadians(90));
+			}
+			else if(deviceOrientation == UIDeviceOrientationPortraitUpsideDown)
+			{
+				frame.origin.x = screenWidth - portraitX;
+				frame.origin.y = screenHeight - portraitY;
+				newTransform = CGAffineTransformMakeRotation(DegreesToRadians(180));
+			}
+			else if(deviceOrientation == UIDeviceOrientationLandscapeRight)
+			{
+				frame.origin.x = portraitX;
+				frame.origin.y = portraitY;
+				newTransform = CGAffineTransformMakeRotation(-DegreesToRadians(90));
 			}
 
+			if(isOnLandscape)
+			{
+				frame.size.width = height;
+				frame.size.height = width;
+			}
+			else
+			{
+				frame.size.width = width;
+				frame.size.height = height;
+			}
+			
 			[UIView animateWithDuration: 0.3f animations:
 			^{
 				[ramInfoWindow setTransform: newTransform];
 				[ramInfoWindow setFrame: frame];
-				orientationOld = orientation;
+				orientationOld = deviceOrientation;
 			} completion: nil];
 		}
 	}
 
 	- (void)updateTextColor: (UIColor*)color
 	{
+		backupForegroundColor = color;
 		CGFloat r;
     	[color getRed: &r green: nil blue: nil alpha: nil];
 		if(r == 0 || r == 1)
 		{
-			if(!customTextColorEnabled) [ramInfoLabel setTextColor: color];
+			if(!customTextColorEnabled)
+				[ramInfoLabel setTextColor: color];
+
 			if(backgroundColorEnabled && !customBackgroundColorEnabled) 
 			{
-				if(r == 0) [ramInfoLabel setBackgroundColor: [[UIColor whiteColor] colorWithAlphaComponent: 0.5]];
-				else [ramInfoLabel setBackgroundColor: [[UIColor blackColor] colorWithAlphaComponent: 0.5]];
-			}	
-
+				if(r == 0)
+					[ramInfoWindow setBackgroundColor: [[UIColor whiteColor] colorWithAlphaComponent: 0.5]];
+				else
+					[ramInfoWindow setBackgroundColor: [[UIColor blackColor] colorWithAlphaComponent: 0.5]];
+				backupBackgroundColor = [ramInfoWindow backgroundColor];
+			}
 		}
 	}
 
@@ -293,18 +297,15 @@ static void loadDeviceScreenDimensions()
 	{
 		if(ramInfoWindow && ramInfoLabel)
 		{
-			if(![coverSheetPresentationManagerInstance _isEffectivelyLocked] && ([coverSheetPresentationManagerInstance isPresented] || !isBlacklistedAppInFront))
-			{
-				[ramInfoWindow setHidden: NO];
+			[self hideIfNeeded];
+			if(![ramInfoWindow isHidden])
 				[ramInfoLabel setText: getMemoryStats()];
-			}
-			else [ramInfoWindow setHidden: YES];
 		}
 	}
 
-	- (void)setHidden: (BOOL)arg
+	- (void)hideIfNeeded
 	{
-		[ramInfoWindow setHidden: arg];
+		[ramInfoWindow setHidden: [coverSheetPresentationManagerInstance _isEffectivelyLocked] || !isLockScreenPresented && (shouldHideBasedOnOrientation || isBlacklistedAppInFront)];
 	}
 
 	- (void)openDoubleTapApp
@@ -338,8 +339,18 @@ static void loadDeviceScreenDimensions()
 
 	NSString *currentApp = [(SBApplication*)[self _accessibilityFrontMostApplication] bundleIdentifier];
 	isBlacklistedAppInFront = blackListedApps && currentApp && [blackListedApps containsObject: currentApp];
+	[ramInfoObject hideIfNeeded];
+}
 
-	[ramInfoObject setHidden: isBlacklistedAppInFront];
+%end
+
+%hook SBCoverSheetPresentationManager
+
+- (BOOL)isPresented
+{
+	isLockScreenPresented = %orig;
+	[ramInfoObject hideIfNeeded];
+	return isLockScreenPresented;
 }
 
 %end
@@ -361,6 +372,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	if(!pref) pref = [[HBPreferences alloc] initWithIdentifier: @"com.johnzaro.raminfo13prefs"];
 	enabled = [pref boolForKey: @"enabled"];
 	showOnLockScreen = [pref boolForKey: @"showOnLockScreen"];
+	hideOnLandscape = [pref boolForKey: @"hideOnLandscape"];
 	showUsedRam = [pref boolForKey: @"showUsedRam"];
 	usedRAMPrefix = [pref objectForKey: @"usedRAMPrefix"];
 	showFreeRam = [pref boolForKey: @"showFreeRam"];
@@ -369,6 +381,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 	totalRAMPrefix = [pref objectForKey: @"totalRAMPrefix"];
 	separator = [pref objectForKey: @"separator"];
 	backgroundColorEnabled = [pref boolForKey: @"backgroundColorEnabled"];
+	margin = [pref integerForKey: @"margin"];
 	backgroundCornerRadius = [pref floatForKey: @"backgroundCornerRadius"];
 	customBackgroundColorEnabled = [pref boolForKey: @"customBackgroundColorEnabled"];
 	portraitX = [pref floatForKey: @"portraitX"];
@@ -429,6 +442,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 		@{
 			@"enabled": @NO,
 			@"showOnLockScreen": @NO,
+			@"hideOnLandscape": @NO,
 			@"showUsedRam": @NO,
 			@"usedRAMPrefix": @"U: ",
 			@"showFreeRam": @NO,
@@ -437,6 +451,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			@"totalRAMPrefix": @"T: ",
 			@"separator": @", ",
 			@"backgroundColorEnabled": @NO,
+			@"margin": @3,
 			@"backgroundCornerRadius": @6,
 			@"customBackgroundColorEnabled": @NO,
 			@"portraitX": @298,
