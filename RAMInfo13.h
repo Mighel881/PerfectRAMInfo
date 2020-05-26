@@ -4,18 +4,24 @@
 - (BOOL)isPresented;
 @end
 
+@interface SBControlCenterController: NSObject
++ (id)sharedInstance;
+- (BOOL)isVisible;
+@end
+
 @interface RamInfo: NSObject
 {
     UIWindow *ramInfoWindow;
     UILabel *ramInfoLabel;
-    SBCoverSheetPresentationManager *coverSheetPresentationManagerInstance;
     UIColor *backupForegroundColor;
     UIColor *backupBackgroundColor;
+    SBCoverSheetPresentationManager *coverSheetPresentationManagerInstance;
+    SBControlCenterController *controlCenterControllerInstance;
 }
 - (id)init;
 - (void)updateOrientation;
 - (void)updateFrame;
-- (void)updateRAMInfoSize;
+- (void)updateRAMInfoLabelSize;
 - (void)updateText;
 - (void)updateTextColor: (UIColor*)color;
 - (void)openDoubleTapApp;

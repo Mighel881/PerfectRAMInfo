@@ -52,7 +52,7 @@
 			<key>label</key>
 			<string>Show On Lock Screen</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -66,7 +66,7 @@
 			<key>label</key>
 			<string>Hide On Landscape</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -86,7 +86,7 @@
 			<key>label</key>
 			<string>Show Used RAM</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -100,7 +100,7 @@
 			<key>label</key>
 			<string>Used RAM Prefix</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -114,7 +114,7 @@
 			<key>label</key>
 			<string>Show Free RAM</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -128,7 +128,7 @@
 			<key>label</key>
 			<string>Free RAM Prefix</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -142,7 +142,7 @@
 			<key>label</key>
 			<string>Show Total Physical RAM</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -156,7 +156,7 @@
 			<key>label</key>
 			<string>Total RAM Prefix</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -170,7 +170,7 @@
 			<key>label</key>
 			<string>Separator</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -192,7 +192,7 @@
 			<key>label</key>
 			<string>Portrait X</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -208,7 +208,7 @@
 			<key>label</key>
 			<string>Portrait Y</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -230,7 +230,7 @@
 			<key>label</key>
 			<string>Landscape X</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -246,7 +246,7 @@
 			<key>label</key>
 			<string>Landscape Y</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -262,11 +262,25 @@
 			<key>defaults</key>
 			<string>com.johnzaro.raminfo13prefs</string>
 			<key>key</key>
+			<string>animateMovement</string>
+			<key>label</key>
+			<string>Animate Movement</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.johnzaro.raminfo13prefs</string>
+			<key>key</key>
 			<string>followDeviceOrientation</string>
 			<key>label</key>
 			<string>Follow Device Orientation</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -288,7 +302,7 @@
 			<key>label</key>
 			<string>Width</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -304,7 +318,7 @@
 			<key>label</key>
 			<string>Height</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -324,7 +338,7 @@
 			<key>label</key>
 			<string>Enable Background Color</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
@@ -344,7 +358,7 @@
 			<key>min</key>
 			<real>0</real>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
@@ -364,7 +378,7 @@
 			<key>min</key>
 			<real>0</real>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -378,7 +392,7 @@
 			<key>label</key>
 			<string>Custom Background Color</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -396,7 +410,7 @@
 				<key>alpha</key>
 				<true/>
 				<key>PostNotification</key>
-				<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+				<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 			</dict>
 			<key>label</key>
 			<string>Custom Background Color</string>
@@ -423,7 +437,7 @@
 			<key>label</key>
 			<string>Font Size</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -437,7 +451,7 @@
 			<key>label</key>
 			<string>Bold Font</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -457,7 +471,7 @@
 			<key>label</key>
 			<string>Enable Custom Text Color</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -475,7 +489,7 @@
 				<key>alpha</key>
 				<false/>
 				<key>PostNotification</key>
-				<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+				<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 			</dict>
 			<key>label</key>
 			<string>Custom Color</string>
@@ -512,7 +526,7 @@
 			<key>label</key>
 			<string>Alignment</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -558,7 +572,7 @@
 			<key>label</key>
 			<string>Double Tap To Open App</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -580,7 +594,7 @@
 			<key>label</key>
 			<string>Hold To Open App</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -610,7 +624,7 @@
 			<key>label</key>
 			<string>Black List Apps</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.raminfo13prefs/reloadprefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
