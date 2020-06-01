@@ -16,6 +16,8 @@ __strong static id ramInfoObject;
 static HBPreferences *pref;
 static BOOL enabled;
 static BOOL showOnLockScreen;
+static BOOL showOnControlCenter;
+static BOOL hideOnFullScreen;
 static BOOL hideOnLandscape;
 static BOOL showUsedRam;
 static NSString *usedRAMPrefix;
@@ -57,6 +59,7 @@ static BOOL isBlacklistedAppInFront = NO;
 static BOOL isOnLandscape;
 static UIDeviceOrientation deviceOrientation;
 static UIDeviceOrientation orientationOld;
+static BOOL isStatusBarHidden;
 
 static NSString* getMemoryStats()
 {
@@ -291,8 +294,9 @@ static void loadDeviceScreenDimensions()
 	{
 		[ramInfoWindow setHidden: 
 			[coverSheetPresentationManagerInstance _isEffectivelyLocked] 
-		 || [controlCenterControllerInstance isVisible] 
 		 || [coverSheetPresentationManagerInstance isPresented] && !showOnLockScreen
+		 || isStatusBarHidden && hideOnFullScreen
+		 || [controlCenterControllerInstance isVisible] && !showOnControlCenter
 		 || ![coverSheetPresentationManagerInstance isPresented] && (shouldHideBasedOnOrientation || isBlacklistedAppInFront)];
 	}
 
@@ -344,6 +348,18 @@ static void loadDeviceScreenDimensions()
 
 %end
 
+%hook SBMainDisplaySceneLayoutStatusBarView
+
+- (void)_applyStatusBarHidden: (BOOL)arg1 withAnimation: (long long)arg2 toSceneWithIdentifier: (id)arg3
+{
+	isStatusBarHidden = arg1;
+	[ramInfoObject hideIfNeeded];
+
+	%orig;
+}
+
+%end
+
 static void settingsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
 	if(backgroundColorEnabled && customBackgroundColorEnabled || customTextColorEnabled)
@@ -390,6 +406,8 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			PHYSICAL_MEMORY = [NSProcessInfo processInfo].physicalMemory / MEGABYTES;
 
 			[pref registerBool: &showOnLockScreen default: NO forKey: @"showOnLockScreen"];
+			[pref registerBool: &showOnControlCenter default: NO forKey: @"showOnControlCenter"];
+			[pref registerBool: &hideOnFullScreen default: NO forKey: @"hideOnFullScreen"];
 			[pref registerBool: &hideOnLandscape default: NO forKey: @"hideOnLandscape"];
 			[pref registerBool: &showUsedRam default: NO forKey: @"showUsedRam"];
 			[pref registerObject: &usedRAMPrefix default: @"U: " forKey: @"usedRAMPrefix"];

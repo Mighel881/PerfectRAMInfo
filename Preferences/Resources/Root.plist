@@ -62,6 +62,34 @@
 			<key>defaults</key>
 			<string>com.johnzaro.raminfo13prefs</string>
 			<key>key</key>
+			<string>showOnControlCenter</string>
+			<key>label</key>
+			<string>Show On Control Center</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.johnzaro.raminfo13prefs</string>
+			<key>key</key>
+			<string>hideOnFullScreen</string>
+			<key>label</key>
+			<string>Hide On Full Screen</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.johnzaro.raminfo13prefs</string>
+			<key>key</key>
 			<string>hideOnLandscape</string>
 			<key>label</key>
 			<string>Hide On Landscape</string>
