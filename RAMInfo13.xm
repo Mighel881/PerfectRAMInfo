@@ -338,12 +338,20 @@ static void loadDeviceScreenDimensions()
 
 %hook _UIStatusBar
 
--(void)setForegroundColor: (UIColor*)color
+- (void)setStyle: (long long)style
 {
 	%orig;
-	
-	if(ramInfoObject && [self styleAttributes] && [[self styleAttributes] imageTintColor]) 
-		[ramInfoObject updateTextColor: [[self styleAttributes] imageTintColor]];
+
+	if(ramInfoObject) 
+		[ramInfoObject updateTextColor: (style == 1) ? [UIColor whiteColor] : [UIColor blackColor]];
+}
+
+- (void)setStyle: (long long)style forPartWithIdentifier: (id)arg2
+{
+	%orig;
+
+	if(ramInfoObject) 
+		[ramInfoObject updateTextColor: (style == 1) ? [UIColor whiteColor] : [UIColor blackColor]];
 }
 
 %end
