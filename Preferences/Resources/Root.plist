@@ -36,9 +36,11 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>WHEN TO SHOW</string>
+			<string>VISIBILITY</string>
 			<key>footerText</key>
-			<string>'SHOW ON LOCK SCREEN' WILL SHOW RAM INFO WHILE DEVICE IS UNLOCKED.</string>
+			<string>'SHOW ON LOCK SCREEN' WILL SHOW RAM INFO WHILE DEVICE IS UNLOCKED.
+
+'NOTCHLESS SUPPORT' OPTION HAS THE SIDE EFFECT OF SHOWING THE BLUETOOTH INFO ABOVE EVERY OTHER UI ELEMENT.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -95,6 +97,20 @@
 			<string>Hide On Landscape</string>
 			<key>PostNotification</key>
 			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.johnzaro.bluetoothbatteryinfoprefs</string>
+			<key>key</key>
+			<string>notchlessSupport</string>
+			<key>label</key>
+			<string>Notchless Support</string>
+			<key>PostNotification</key>
+			<string>com.johnzaro.bluetoothbatteryinfoprefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -551,8 +567,6 @@
       			<string>1</string>
       			<string>2</string>
 			</array>
-			<key>label</key>
-			<string>Alignment</string>
 			<key>PostNotification</key>
 			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
@@ -690,7 +704,7 @@
 			<key>icon</key>
 			<string>github.png</string>
 			<key>url</key>
-   	 		<string>https://github.com/johnzaro/RAMInfo13</string>
+   	 		<string>https://github.com/johnzaro/RAMInfo</string>
 		</dict>
  		<dict>
         	<key>cell</key>
@@ -744,6 +758,6 @@
         </dict>
 	</array>
 	<key>title</key>
-	<string>RAMInfo13</string>
+	<string>RAMInfo</string>
 </dict>
 </plist>

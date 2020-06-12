@@ -1,4 +1,4 @@
-#import "RAMInfo13.h"
+#import "RAMInfo.h"
 
 #import "SparkColourPickerUtils.h"
 #import "SparkAppList.h"
@@ -19,6 +19,7 @@ static BOOL showOnLockScreen;
 static BOOL showOnControlCenter;
 static BOOL hideOnFullScreen;
 static BOOL hideOnLandscape;
+static BOOL notchlessSupport;
 static BOOL showUsedRam;
 static NSString *usedRAMPrefix;
 static BOOL showFreeRam;
@@ -54,12 +55,15 @@ static NSArray *blackListedApps;
 
 static double screenWidth;
 static double screenHeight;
-static BOOL shouldHideBasedOnOrientation = NO;
-static BOOL isBlacklistedAppInFront = NO;
-static BOOL isOnLandscape;
-static UIDeviceOrientation deviceOrientation;
 static UIDeviceOrientation orientationOld;
-static BOOL isStatusBarHidden;
+static UIDeviceOrientation deviceOrientation;
+static BOOL isBlacklistedAppInFront = NO;
+static BOOL shouldHideBasedOnOrientation = NO;
+static BOOL isOnLandscape;
+static BOOL isPeepStatusBarHidden = NO;
+static BOOL isStatusBarHidden = NO;
+static BOOL isAppSwitcherOpen = NO;
+static BOOL isFolderOpen = NO;
 
 static NSString* getMemoryStats()
 {
@@ -129,7 +133,6 @@ static void loadDeviceScreenDimensions()
 			UILongPressGestureRecognizer *holdGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget: self action: @selector(openHoldApp)];
 			
 			ramInfoWindow = [[UIWindow alloc] initWithFrame: CGRectMake(0, 0, 0, 0)];
-			[ramInfoWindow setWindowLevel: 100000];
 			[ramInfoWindow _setSecure: YES];
 			[[ramInfoWindow layer] setAnchorPoint: CGPointZero];
 			[ramInfoWindow addSubview: ramInfoLabel];
@@ -162,6 +165,11 @@ static void loadDeviceScreenDimensions()
 	- (void)_updateFrame
 	{
 		orientationOld = nil;
+
+		if(notchlessSupport)
+			[ramInfoWindow setWindowLevel: 100000];
+		else
+			[ramInfoWindow setWindowLevel: 1075];
 
 		if(!backgroundColorEnabled)
 			[ramInfoWindow setBackgroundColor: [UIColor clearColor]];
@@ -297,7 +305,10 @@ static void loadDeviceScreenDimensions()
 		 || [coverSheetPresentationManagerInstance isPresented] && !showOnLockScreen
 		 || isStatusBarHidden && hideOnFullScreen
 		 || [controlCenterControllerInstance isVisible] && !showOnControlCenter
-		 || ![coverSheetPresentationManagerInstance isPresented] && (shouldHideBasedOnOrientation || isBlacklistedAppInFront)];
+		 || isFolderOpen
+		 || isAppSwitcherOpen
+		 || ![coverSheetPresentationManagerInstance isPresented] && (shouldHideBasedOnOrientation || isBlacklistedAppInFront)
+		 || isPeepStatusBarHidden];
 	}
 
 	- (void)openDoubleTapApp
@@ -316,7 +327,7 @@ static void loadDeviceScreenDimensions()
 
 %hook SpringBoard
 
-- (void)applicationDidFinishLaunching: (id)application
+- (void)applicationDidFinishLaunching: (id)application // load module
 {
 	%orig;
 
@@ -325,7 +336,7 @@ static void loadDeviceScreenDimensions()
 		ramInfoObject = [[RamInfo alloc] init];
 }
 
--(void)frontDisplayDidChange: (id)arg1 
+- (void)frontDisplayDidChange: (id)arg1 // check if opened app is blacklisted
 {
 	%orig;
 
@@ -336,7 +347,7 @@ static void loadDeviceScreenDimensions()
 
 %end
 
-%hook _UIStatusBar
+%hook _UIStatusBar // update colors based on status bar colors
 
 - (void)setStyle: (long long)style
 {
@@ -356,14 +367,57 @@ static void loadDeviceScreenDimensions()
 
 %end
 
-%hook SBMainDisplaySceneLayoutStatusBarView
+%hook SBMainDisplaySceneLayoutStatusBarView // hide on full screen
 
 - (void)_applyStatusBarHidden: (BOOL)arg1 withAnimation: (long long)arg2 toSceneWithIdentifier: (id)arg3
 {
 	isStatusBarHidden = arg1;
 	[ramInfoObject hideIfNeeded];
-
 	%orig;
+}
+
+%end
+
+%hook _UIStatusBarForegroundView // support for peep tweak
+
+- (void)setHidden: (BOOL)arg
+{
+	%orig;
+
+	isPeepStatusBarHidden = arg;
+	[ramInfoObject hideIfNeeded];
+}
+
+%end
+
+%hook SBMainSwitcherViewController // check if app switcher is open
+
+-(void)updateWindowVisibilityForSwitcherContentController: (id)arg1
+{
+	%orig;
+
+	isAppSwitcherOpen = [self isMainSwitcherVisible];
+	[ramInfoObject hideIfNeeded];
+}
+
+%end
+
+%hook SBFloatyFolderController // check if a folder is open
+
+- (void)viewWillAppear: (BOOL)arg1
+{
+	%orig;
+
+	isFolderOpen = YES;
+	[ramInfoObject hideIfNeeded];
+}
+
+- (void)viewWillDisappear: (BOOL)arg1
+{
+	%orig;
+
+	isFolderOpen = NO;
+	[ramInfoObject hideIfNeeded];
 }
 
 %end
@@ -417,6 +471,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			[pref registerBool: &showOnControlCenter default: NO forKey: @"showOnControlCenter"];
 			[pref registerBool: &hideOnFullScreen default: NO forKey: @"hideOnFullScreen"];
 			[pref registerBool: &hideOnLandscape default: NO forKey: @"hideOnLandscape"];
+			[pref registerBool: &notchlessSupport default: NO forKey: @"notchlessSupport"];
 			[pref registerBool: &showUsedRam default: NO forKey: @"showUsedRam"];
 			[pref registerObject: &usedRAMPrefix default: @"U: " forKey: @"usedRAMPrefix"];
 			[pref registerBool: &showFreeRam default: NO forKey: @"showFreeRam"];
