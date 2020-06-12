@@ -104,13 +104,13 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
-			<string>com.johnzaro.bluetoothbatteryinfoprefs</string>
+			<string>com.johnzaro.raminfo13prefs</string>
 			<key>key</key>
 			<string>notchlessSupport</string>
 			<key>label</key>
 			<string>Notchless Support</string>
 			<key>PostNotification</key>
-			<string>com.johnzaro.bluetoothbatteryinfoprefs/ReloadPrefs</string>
+			<string>com.johnzaro.raminfo13prefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
