@@ -19,6 +19,7 @@ static BOOL showOnLockScreen;
 static BOOL showOnControlCenter;
 static BOOL hideOnFullScreen;
 static BOOL hideOnLandscape;
+static BOOL hideOnAppSwitcherFolder;
 static BOOL notchlessSupport;
 static BOOL showUsedRam;
 static NSString *usedRAMPrefix;
@@ -305,8 +306,7 @@ static void loadDeviceScreenDimensions()
 		 || [coverSheetPresentationManagerInstance isPresented] && !showOnLockScreen
 		 || isStatusBarHidden && hideOnFullScreen
 		 || [controlCenterControllerInstance isVisible] && !showOnControlCenter
-		 || isFolderOpen
-		 || isAppSwitcherOpen
+		 || (isFolderOpen || isAppSwitcherOpen) && hideOnAppSwitcherFolder
 		 || ![coverSheetPresentationManagerInstance isPresented] && (shouldHideBasedOnOrientation || isBlacklistedAppInFront)
 		 || isPeepStatusBarHidden];
 	}
@@ -471,6 +471,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			[pref registerBool: &showOnControlCenter default: NO forKey: @"showOnControlCenter"];
 			[pref registerBool: &hideOnFullScreen default: NO forKey: @"hideOnFullScreen"];
 			[pref registerBool: &hideOnLandscape default: NO forKey: @"hideOnLandscape"];
+			[pref registerBool: &hideOnAppSwitcherFolder default: NO forKey: @"hideOnAppSwitcherFolder"];
 			[pref registerBool: &notchlessSupport default: NO forKey: @"notchlessSupport"];
 			[pref registerBool: &showUsedRam default: NO forKey: @"showUsedRam"];
 			[pref registerObject: &usedRAMPrefix default: @"U: " forKey: @"usedRAMPrefix"];
