@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>RAMInfo13Prefs</string>
+	<string>PerfectRAMInfo13Prefs</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.johnzaro.raminfo13prefs</string>
 	<key>CFBundleInfoDictionaryVersion</key>

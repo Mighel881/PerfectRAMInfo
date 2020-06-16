@@ -1,7 +1,7 @@
 Package: com.johnzaro.raminfo13
-Name: RAMInfo
+Name: PerfectRAMInfo
 Depends: mobilesubstrate, com.spark.libsparkapplist, com.spark.libsparkcolourpicker, preferenceloader, ws.hbang.common (>= 1.14), firmware (>= 12)
-Version: 2.6.1
+Version: 2.7
 Architecture: iphoneos-arm
 Description: Shows RAM Information In The Status Bar
 Maintainer: Johnzaro <johnzrgnns@gmail.com>

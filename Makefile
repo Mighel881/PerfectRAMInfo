@@ -7,11 +7,11 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 include $(THEOS)/makefiles/common.mk
 GO_EASY_ON_ME = 1
 
-TWEAK_NAME = RAMInfo
-RAMInfo_FILES = RAMInfo.xm
-RAMInfo_CFLAGS += -fobjc-arc -Wno-deprecated-declarations -Wno-logical-op-parentheses
-RAMInfo_LIBRARIES += sparkcolourpicker sparkapplist
-RAMInfo_EXTRA_FRAMEWORKS += Cephei
+TWEAK_NAME = PerfectRAMInfo
+PerfectRAMInfo_FILES = PerfectRAMInfo.xm
+PerfectRAMInfo_CFLAGS += -fobjc-arc -Wno-deprecated-declarations -Wno-logical-op-parentheses
+PerfectRAMInfo_LIBRARIES += sparkcolourpicker sparkapplist
+PerfectRAMInfo_EXTRA_FRAMEWORKS += Cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

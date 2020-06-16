@@ -21,7 +21,7 @@
 - (id)init;
 - (void)updateOrientation;
 - (void)updateFrame;
-- (void)updateRAMInfoLabelSize;
+- (void)updatePerfectRAMInfoLabelSize;
 - (void)updateText;
 - (void)updateTextColor: (UIColor*)color;
 - (void)openDoubleTapApp;

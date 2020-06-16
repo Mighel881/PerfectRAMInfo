@@ -1,4 +1,4 @@
-#import "RAMInfo.h"
+#import "PerfectRAMInfo.h"
 
 #import "SparkColourPickerUtils.h"
 #import "SparkAppList.h"
@@ -184,12 +184,12 @@ static void loadDeviceScreenDimensions()
 			[[ramInfoWindow layer] setCornerRadius: backgroundCornerRadius];
 		}
 
-		[self updateRAMInfoLabelProperties];
-		[self updateRAMInfoLabelSize];
+		[self updatePerfectRAMInfoLabelProperties];
+		[self updatePerfectRAMInfoLabelSize];
 		[self updateOrientation];
 	}
 
-	- (void)updateRAMInfoLabelProperties
+	- (void)updatePerfectRAMInfoLabelProperties
 	{
 		if(boldFont) [ramInfoLabel setFont: [UIFont boldSystemFontOfSize: fontSize]];
 		else [ramInfoLabel setFont: [UIFont systemFontOfSize: fontSize]];
@@ -202,7 +202,7 @@ static void loadDeviceScreenDimensions()
 			[ramInfoLabel setTextColor: backupForegroundColor];
 	}
 
-	- (void)updateRAMInfoLabelSize
+	- (void)updatePerfectRAMInfoLabelSize
 	{
 		CGRect frame = [ramInfoLabel frame];
 		frame.origin.x = margin;
