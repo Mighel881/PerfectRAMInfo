@@ -16,6 +16,7 @@ __strong static id ramInfoObject;
 static HBPreferences *pref;
 static BOOL enabled;
 static BOOL showOnLockScreen;
+static BOOL showOnlyOnLockScreen;
 static BOOL showOnControlCenter;
 static BOOL hideOnFullScreen;
 static BOOL hideOnLandscape;
@@ -304,6 +305,7 @@ static void loadDeviceScreenDimensions()
 		[ramInfoWindow setHidden: 
 			[coverSheetPresentationManagerInstance _isEffectivelyLocked] 
 		 || [coverSheetPresentationManagerInstance isPresented] && !showOnLockScreen
+		 || ![coverSheetPresentationManagerInstance isPresented] && showOnlyOnLockScreen
 		 || isStatusBarHidden && hideOnFullScreen
 		 || [controlCenterControllerInstance isVisible] && !showOnControlCenter
 		 || (isFolderOpen || isAppSwitcherOpen) && hideOnAppSwitcherFolder
@@ -468,6 +470,7 @@ static void settingsChanged(CFNotificationCenterRef center, void *observer, CFSt
 			PHYSICAL_MEMORY = [NSProcessInfo processInfo].physicalMemory / MEGABYTES;
 
 			[pref registerBool: &showOnLockScreen default: NO forKey: @"showOnLockScreen"];
+			[pref registerBool: &showOnlyOnLockScreen default: NO forKey: @"showOnlyOnLockScreen"];
 			[pref registerBool: &showOnControlCenter default: NO forKey: @"showOnControlCenter"];
 			[pref registerBool: &hideOnFullScreen default: NO forKey: @"hideOnFullScreen"];
 			[pref registerBool: &hideOnLandscape default: NO forKey: @"hideOnLandscape"];
